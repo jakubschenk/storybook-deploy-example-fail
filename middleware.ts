@@ -1,13 +1,11 @@
-import { getToken } from "next-auth/jwt";
+import { withAuth } from "next-auth/middleware";
 import { NextRequest, NextResponse } from "next/server";
 
-export default async function middleware(request: NextRequest) {
-  const token = await getToken({
-    req: request,
-  });
-  if (token) {
-    NextResponse.next();
-  }
-
-  NextResponse.next();
-}
+export default withAuth({
+  callbacks: {
+    authorized({ req, token }) {
+      console.log(token);
+      return !!token;
+    },
+  },
+});
